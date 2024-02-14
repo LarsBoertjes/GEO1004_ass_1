@@ -5,6 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package( CGAL REQUIRED )
 
-add_executable(GEO1004_ass_1 main.cpp)
+add_executable(GEO1004_ass_1 hw1.cpp)
 
 target_link_libraries(GEO1004_ass_1 CGAL::CGAL)
