@@ -33,3 +33,5 @@
 .idea/vcs.xml
 
 cmake-build-debug/
+*.log
+cmake-build-debug/CMakeFiles/GEO1004_ass_1.dir/compiler_depend.make

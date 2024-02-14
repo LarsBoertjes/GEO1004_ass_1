@@ -24,8 +24,10 @@ typedef CGAL::Triangulation_face_base_with_info_2<FaceInfo, Kernel, FaceBase> Fa
 typedef CGAL::Triangulation_data_structure_2<VertexBase, FaceBaseWithInfo> TriangulationDataStructure;
 typedef CGAL::Constrained_Delaunay_triangulation_2<Kernel, TriangulationDataStructure, Tag> Triangulation;
 
-const std::string input_file = "/Users/ken/Downloads/hw1/NL.IMBAG.Pand.0503100000032914-0.obj"; // the faculty building
-const std::string output_file = "/Users/ken/Downloads/faculty.obj";
+//const std::string input_file = "/Users/ken/Downloads/hw1/NL.IMBAG.Pand.0503100000032914-0.obj"; // the faculty building
+const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000000138-0.obj"; // simple test file
+//const std::string output_file = "/Users/ken/Downloads/faculty.obj";
+const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/test.obj";
 
 // struct are like public classes
 
@@ -40,60 +42,62 @@ struct Face {
 };
 
 int main(int argc, const char * argv[]) {
+    std::cout << "test" << std::endl;
+    std::vector<Vertex> vertices;
+    std::vector<Face> faces;
 
-  std::vector<Vertex> vertices;
-  std::vector<Face> faces;
+    // Read file
+    std::ifstream input_stream;
+    input_stream.open(input_file);
+    if (input_stream.is_open()) {
+        std::string line;
 
-  // Read file
-  std::ifstream input_stream;
-  input_stream.open(input_file);
-  if (input_stream.is_open()) {
-    std::string line;
+        // Parse line by line
+        while (getline(input_stream, line)) {
+            std::cout << line << std::endl;
 
-    // Parse line by line
-    while (getline(input_stream, line)) {
-//      std::cout << line << std::endl;
+            std::istringstream line_stream(line);
+            char line_type;
+            line_stream >> line_type;
 
-      std::istringstream line_stream(line);
-      char line_type;
-      line_stream >> line_type;
+            // Vertex
+            if (line_type == 'v') {
+                vertices.emplace_back();
+                double x, y, z;
+                line_stream >> x >> y >> z;
+                vertices.back().x = x;
+                vertices.back().y = y;
+                vertices.back().z = z;
+            }
 
-      // Vertex
-      if (line_type == 'v') {
-        vertices.emplace_back();
-        double x, y, z;
-        line_stream >> x >> y >> z;
-        vertices.back().x = x;
-        vertices.back().y = y;
-        vertices.back().z = z;
-      }
+            // Face
+            if (line_type == 'f') {
+                faces.emplace_back();
+                int v;
+                while (!line_stream.eof()) {
+                    line_stream >> v;
+                    faces.back().boundary.emplace_back(v-1);
+            }
+          }
 
-      // Face
-      if (line_type == 'f') {
-        faces.emplace_back();
-        int v;
-        while (!line_stream.eof()) {
-          line_stream >> v;
-          faces.back().boundary.emplace_back(v-1);
         }
-      }
-
+  } else {
+        std::cout << "input stream is niet open ofzo" << std::endl;
     }
-  }
 
   // Print vertices
-//  int i = 0;
-//  for (auto const &vertex: vertices) {
-//    std::cout << "Vertex " << i++ << ": " << "(" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
-//  }
+  int i = 0;
+  for (auto const &vertex: vertices) {
+    std::cout << "Vertex " << i++ << ": " << "(" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
+  }
 
   // Print faces
-//  i = 0;
-//  for (auto const &face: faces) {
-//    std::cout << "Face " << i++ << ": ";
-//    for (auto const &vertex: face.boundary) std::cout << " " << vertex;
-//    std::cout << std::endl;
-//  }
+  i = 0;
+  for (auto const &face: faces) {
+    std::cout << "Face " << i++ << ": ";
+    for (auto const &vertex: face.boundary) std::cout << " " << vertex;
+    std::cout << std::endl;
+  }
 
   // Best fitting planes (to do)
 
