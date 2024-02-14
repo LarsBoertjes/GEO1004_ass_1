@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/GEO1004_ass_1.dir/main.cpp.o"
-  "CMakeFiles/GEO1004_ass_1.dir/main.cpp.o.d"
+  "CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o"
+  "CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o.d"
   "GEO1004_ass_1"
   "GEO1004_ass_1.pdb"
 )

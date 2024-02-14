@@ -69,28 +69,28 @@ include CMakeFiles/GEO1004_ass_1.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/GEO1004_ass_1.dir/flags.make
 
-CMakeFiles/GEO1004_ass_1.dir/main.cpp.o: CMakeFiles/GEO1004_ass_1.dir/flags.make
-CMakeFiles/GEO1004_ass_1.dir/main.cpp.o: ../main.cpp
-CMakeFiles/GEO1004_ass_1.dir/main.cpp.o: CMakeFiles/GEO1004_ass_1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/GEO1004_ass_1.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/GEO1004_ass_1.dir/main.cpp.o -MF CMakeFiles/GEO1004_ass_1.dir/main.cpp.o.d -o CMakeFiles/GEO1004_ass_1.dir/main.cpp.o -c /mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/main.cpp
+CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o: CMakeFiles/GEO1004_ass_1.dir/flags.make
+CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o: ../hw1.cpp
+CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o: CMakeFiles/GEO1004_ass_1.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o -MF CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o.d -o CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o -c /mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1.cpp
 
-CMakeFiles/GEO1004_ass_1.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GEO1004_ass_1.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/main.cpp > CMakeFiles/GEO1004_ass_1.dir/main.cpp.i
+CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1.cpp > CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.i
 
-CMakeFiles/GEO1004_ass_1.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GEO1004_ass_1.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/main.cpp -o CMakeFiles/GEO1004_ass_1.dir/main.cpp.s
+CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1.cpp -o CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.s
 
 # Object files for target GEO1004_ass_1
 GEO1004_ass_1_OBJECTS = \
-"CMakeFiles/GEO1004_ass_1.dir/main.cpp.o"
+"CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o"
 
 # External object files for target GEO1004_ass_1
 GEO1004_ass_1_EXTERNAL_OBJECTS =
 
-GEO1004_ass_1: CMakeFiles/GEO1004_ass_1.dir/main.cpp.o
+GEO1004_ass_1: CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o
 GEO1004_ass_1: CMakeFiles/GEO1004_ass_1.dir/build.make
 GEO1004_ass_1: /usr/lib/x86_64-linux-gnu/libgmpxx.so
 GEO1004_ass_1: /usr/lib/x86_64-linux-gnu/libmpfr.so

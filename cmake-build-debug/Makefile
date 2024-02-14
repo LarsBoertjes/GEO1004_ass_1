@@ -129,29 +129,29 @@ GEO1004_ass_1/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/build
 .PHONY : GEO1004_ass_1/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+hw1.o: hw1.cpp.o
+.PHONY : hw1.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/main.cpp.o
-.PHONY : main.cpp.o
+hw1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.o
+.PHONY : hw1.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+hw1.i: hw1.cpp.i
+.PHONY : hw1.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/main.cpp.i
-.PHONY : main.cpp.i
+hw1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.i
+.PHONY : hw1.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+hw1.s: hw1.cpp.s
+.PHONY : hw1.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/main.cpp.s
-.PHONY : main.cpp.s
+hw1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GEO1004_ass_1.dir/build.make CMakeFiles/GEO1004_ass_1.dir/hw1.cpp.s
+.PHONY : hw1.cpp.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... GEO1004_ass_1"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... hw1.o"
+	@echo "... hw1.i"
+	@echo "... hw1.s"
 .PHONY : help
 
 

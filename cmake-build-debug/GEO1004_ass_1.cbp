@@ -86,7 +86,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/main.cpp">
+		<Unit filename="/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1.cpp">
 			<Option target="GEO1004_ass_1"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/CMakeLists.txt">
