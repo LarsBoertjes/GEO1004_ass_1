@@ -46,7 +46,7 @@ int main(int argc, const char * argv[]) {
     std::vector<Vertex> vertices;
     std::vector<Face> faces;
 
-    // Read file
+    // Step 1: Import the OBJ file and load it into a data structure
     std::ifstream input_stream;
     input_stream.open(input_file);
     if (input_stream.is_open()) {
@@ -85,13 +85,13 @@ int main(int argc, const char * argv[]) {
         std::cout << "input stream is niet open ofzo" << std::endl;
     }
 
-  // Print vertices
+  // Print vertices to see if it worked
   int i = 0;
   for (auto const &vertex: vertices) {
     std::cout << "Vertex " << i++ << ": " << "(" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
   }
 
-  // Print faces
+  // Print faces to see if it worked
   i = 0;
   for (auto const &face: faces) {
     std::cout << "Face " << i++ << ": ";
@@ -99,9 +99,19 @@ int main(int argc, const char * argv[]) {
     std::cout << std::endl;
   }
 
-  // Best fitting planes (to do)
+  // Step 2: For each of the faces compute the best-fitting plane
+  for (auto &face : faces) {
+      std::vector<Kernel::Point_3> points; // face.boundary -> just the ids of the boundary vertices
+      for (const int &index : face.boundary) {
+          points.emplace_back(vertices[index].x, vertices[index].y, vertices[index].z); // using emplace_back here because we are constructing it
+      }
+      // Compute the best-fitting plane
+      Kernel::Plane_3 plane; // initialize a plane for the set of points of the face
+      CGAL::linear_least_squares_fitting_3(points.begin(), points.end(), plane, CGAL::Dimension_tag<0>()); // fit the plane using iterators from the points, CGAL::Dimension_tag<0>() is used to specify to cgal that it deals with points.
+      face.best_plane = plane; // store the best fitting plane to the face
+  }
 
-  // Triangulate faces (to do)
+  // Step 3: Triangulate faces
 
   // Label triangulation (to do)
 
