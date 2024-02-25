@@ -29,10 +29,10 @@ typedef Kernel::Point_2 Point2;
 typedef Kernel::Point_3 Point3;
 
 
-//const std::string input_file = "/Users/ken/Downloads/hw1/NL.IMBAG.Pand.0503100000032914-0.obj"; // the faculty building
-const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000000138-0.obj"; // simple test file
-//const std::string output_file = "/Users/ken/Downloads/faculty.obj";
-const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/test.obj";
+//const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000000138-0.obj"; // simple test file
+const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000025027-0.obj"; // complex test file
+//const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/simple.obj";
+const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/complex.obj";
 
 // struct are like public classes
 
@@ -134,7 +134,7 @@ int main(int argc, const char * argv[]) {
       }
 
       // when the triangulation is finished assign it to the face
-      //face.triangulation = triangulation;
+      face.triangulation = triangulation;
 
       //std::cout << face.triangulation << std::endl;
 
@@ -165,7 +165,7 @@ int main(int argc, const char * argv[]) {
 
       // Step 5: export the interior faces back to 3d using the best fitting plane
 
-      for (auto it = face.triangulation.finite_faces_begin(); it != face.triangulation.finite_faces_end(); ++it) {
+      for (auto it = triangulation.finite_faces_begin(); it != triangulation.finite_faces_end(); ++it) {
           if (it->info().interior) {
               std::vector<int> face_vertex_indices;
               for (int i = 0; i < 3; ++i) {
