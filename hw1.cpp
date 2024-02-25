@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <map>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
@@ -48,6 +49,12 @@ struct Face {
 int main(int argc, const char * argv[]) {
     std::vector<Vertex> vertices;
     std::vector<Face> faces;
+    // initialize output vertices and faces vector
+    std::map<Point3, int, Kernel::Less_xyz_3> vertex_indices; // Kernel::Less_xyz_3 is to compare the points being the same
+    std::vector<Point3> output_vertices;
+    std::vector<std::vector<int>> output_faces;
+
+    int index = 0; // for storing the point indices
 
     // Step 1: Import the OBJ file and load it into a data structure
     std::ifstream input_stream;
@@ -86,10 +93,6 @@ int main(int argc, const char * argv[]) {
         }
   }
 
-  for (auto vertex : vertices) {
-      std::cout << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
-  }
-
   // Step 2: For each of the faces compute the best-fitting plane
   for (auto &face : faces) {
       std::vector<Kernel::Point_3> points; // face.boundary -> just the ids of the boundary vertices
@@ -104,6 +107,7 @@ int main(int argc, const char * argv[]) {
 
   // Step 3: Triangulate faces
   for (auto &face : faces) {
+
       // For every face fit points onto 2d
       std::vector<Point2> facePoints2D;
 
@@ -130,7 +134,9 @@ int main(int argc, const char * argv[]) {
       }
 
       // when the triangulation is finished assign it to the face
-      face.triangulation = triangulation;
+      //face.triangulation = triangulation;
+
+      //std::cout << face.triangulation << std::endl;
 
       // Step 4: Label triangulation (per face)
       std::list<Triangulation::Face_handle> to_check;
@@ -139,11 +145,11 @@ int main(int argc, const char * argv[]) {
       CGAL_assertion(triangulation.infinite_face()->info().interior == false); // check that the infinite face is always marked as exterior
       to_check.push_back(triangulation.infinite_face());
       while (!to_check.empty()) {
-          CGAL_assertion(to_check.front()->info().processed == true);
+          CGAL_assertion(to_check.front()->info().processed == true); // checked that front is always processed
           for (int neighbour = 0; neighbour < 3; ++neighbour) {
               if (to_check.front()->neighbor(neighbour)->info().processed) {
 
-              } else {
+              } else { // If its a neighbor still needs to be checked
                   to_check.front()->neighbor(neighbour)->info().processed = true;
                   CGAL_assertion(to_check.front()->neighbor(neighbour)->info().processed == true);
                   if (triangulation.is_constrained(Triangulation::Edge(to_check.front(), neighbour))) {
@@ -156,14 +162,57 @@ int main(int argc, const char * argv[]) {
               }
           } to_check.pop_front();
       }
-      
+
+      // Step 5: export the interior faces back to 3d using the best fitting plane
+
+      for (auto it = face.triangulation.finite_faces_begin(); it != face.triangulation.finite_faces_end(); ++it) {
+          if (it->info().interior) {
+              std::vector<int> face_vertex_indices;
+              for (int i = 0; i < 3; ++i) {
+                  Point2 pt2 = it->vertex(i)->point();
+                  Point3 pt3 = face.best_plane.to_3d(pt2);
+
+                  // Check if this vertex is already added
+                  if (vertex_indices.find(pt3) == vertex_indices.end()) {
+                      // new vertex, add to vector and map
+                      output_vertices.push_back(pt3);
+                      vertex_indices[pt3] = ++index;
+                  }
+
+                  // use the vertex_indices to find the vertex number to store for the face
+                  face_vertex_indices.push_back(vertex_indices[pt3]);
+              }
+
+              output_faces.push_back(face_vertex_indices);
+
+          }
+      }
+
   }
 
-  // Label triangulation (to do)
+  // Step 6 : Output to OBJ file
+  std::ofstream output_stream(output_file);
+  if (output_stream.is_open()) {
+      // write vertices
+      for (const auto &vertex : output_vertices) {
+          output_stream << "v " << vertex.x() << " " << vertex.y() << " " << vertex.z() << std::endl;
+      }
 
-  // Export triangles (to do)
+      // write faces
+      for (const auto &face : output_faces) {
+          output_stream << "f";
+          for (int vertex_index : face) {
+              output_stream << " " << vertex_index;
+          }
+          output_stream << std::endl;
+      }
+      output_stream.close();
+  } else {
+      std::cerr << "Could not open output file." << std::endl;
+      return -1;
+  }
 
-  // test
+
 
   return 0;
 }
