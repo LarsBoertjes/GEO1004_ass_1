@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <cmath>
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
@@ -15,7 +16,7 @@ typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef CGAL::Exact_predicates_tag Tag;
 struct FaceInfo {
   bool interior, processed;
-  FaceInfo() { // useful, use it!
+  FaceInfo() {
     processed = false;
     interior = false;
   }
@@ -29,32 +30,49 @@ typedef Kernel::Point_2 Point2;
 typedef Kernel::Point_3 Point3;
 
 
-//const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000000138-0.obj"; // simple test file
-const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000025027-0.obj"; // complex test file
+//const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000000138-0.obj";
+const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000025027-0.obj";
 //const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/simple.obj";
 const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/complex.obj";
 
 // struct are like public classes
-
 struct Vertex {
   double x, y, z;
 };
 
 struct Face {
-  std::list<int> boundary; // ids of vertices vector
-  Kernel::Plane_3 best_plane; // place to store best fitting plane
-  Triangulation triangulation; // place to store triangulation
+  std::list<int> boundary;
+  Kernel::Plane_3 best_plane;
+  Triangulation triangulation;
+};
+
+// struct to maintain a strict weak ordering of Point3 objects
+// to check for duplicate Point3 values within epsilon tolerance later
+struct epsilonCompare {
+    bool operator() (const Point3& a, const Point3& b) const {
+        const double EPSILON = 0.0001;
+
+        if (std::abs(a.x() - b.x()) < EPSILON) {
+            if (std::abs(a.y() - b.y()) < EPSILON) {
+                return (a.z() + EPSILON) < b.z(); // Compare z if x and y are "close enough"
+            }
+            return (a.y() + EPSILON) < b.y(); // Compare y if x is "close enough"
+        }
+        return (a.x() + EPSILON) < b.x(); // Compare x coordinates
+    }
 };
 
 int main(int argc, const char * argv[]) {
+    // initialize vectors to read in OBJ data
     std::vector<Vertex> vertices;
     std::vector<Face> faces;
-    // initialize output vertices and faces vector
-    std::map<Point3, int, Kernel::Less_xyz_3> vertex_indices; // Kernel::Less_xyz_3 is to compare the points being the same
+
+    // initialize map to check for duplicate vertices using epsilonCompare
+    std::map<Point3, int, epsilonCompare> vertex_indices;
+
+    // initialize vertex and face vectors to store output vertices and faces before writing to OBJ file
     std::vector<Point3> output_vertices;
     std::vector<std::vector<int>> output_faces;
-
-    int index = 0; // for storing the point indices
 
     // Step 1: Import the OBJ file and load it into a data structure
     std::ifstream input_stream;
@@ -64,8 +82,6 @@ int main(int argc, const char * argv[]) {
 
         // Parse line by line
         while (getline(input_stream, line)) {
-            //std::cout << line << std::endl;
-
             std::istringstream line_stream(line);
             char line_type;
             line_stream >> line_type;
@@ -95,32 +111,37 @@ int main(int argc, const char * argv[]) {
 
   // Step 2: For each of the faces compute the best-fitting plane
   for (auto &face : faces) {
-      std::vector<Kernel::Point_3> points; // face.boundary -> just the ids of the boundary vertices
+      // initialize vector for storing vertex coordinates of the face
+      std::vector<Kernel::Point_3> vertex_coord;
+
+      // iterate over the indices from the face and use them to construct coordinates
       for (const int &index : face.boundary) {
-          points.emplace_back(vertices[index].x, vertices[index].y, vertices[index].z); // using emplace_back here because we are constructing it
+          vertex_coord.emplace_back(vertices[index].x, vertices[index].y, vertices[index].z); // using emplace_back here because we are constructing the point
       }
-      // Compute the best-fitting plane
+
+      // compute the best-fitting plane
       Kernel::Plane_3 plane; // initialize a plane for the set of points of the face
-      CGAL::linear_least_squares_fitting_3(points.begin(), points.end(), plane, CGAL::Dimension_tag<0>()); // fit the plane using iterators from the points, CGAL::Dimension_tag<0>() is used to specify to cgal that it deals with points.
+      CGAL::linear_least_squares_fitting_3(vertex_coord.begin(), vertex_coord.end(), plane, CGAL::Dimension_tag<0>()); // fit the plane using iterators from the points, CGAL::Dimension_tag<0>() is used to specify to cgal that it deals with points.
       face.best_plane = plane; // store the best fitting plane to the face
   }
 
   // Step 3: Triangulate faces
   for (auto &face : faces) {
 
-      // For every face fit points onto 2d
+      // vector to store 2D points of face
       std::vector<Point2> facePoints2D;
 
+      // iterate over 3D vertices of face and store the 2D vertices using best-fitting plane
       for (int vertex : face.boundary) {
           Point3 point3d(vertices[vertex].x, vertices[vertex].y, vertices[vertex].z);
           Point2 pt = face.best_plane.to_2d(point3d);
           facePoints2D.push_back(pt);
       }
 
-      // create a triangulation for the facePoints2D.
+      // initialize a triangulation object for the facePoints2D.
       Triangulation triangulation;
 
-      // insert all the points into the triangulation
+      // insert all the 2D points into the triangulation
       for (const Point2& pt : facePoints2D) {
           triangulation.insert(pt);
       }
@@ -136,20 +157,18 @@ int main(int argc, const char * argv[]) {
       // when the triangulation is finished assign it to the face
       face.triangulation = triangulation;
 
-      //std::cout << face.triangulation << std::endl;
-
-      // Step 4: Label triangulation (per face)
+      // Step 4: Label face triangulation with interior or exterior
       std::list<Triangulation::Face_handle> to_check;
       triangulation.infinite_face()->info().processed = true;
-      CGAL_assertion(triangulation.infinite_face()->info().processed == true); // check that the infinite face is always marked as processed
-      CGAL_assertion(triangulation.infinite_face()->info().interior == false); // check that the infinite face is always marked as exterior
+      CGAL_assertion(triangulation.infinite_face()->info().processed == true);
+      CGAL_assertion(triangulation.infinite_face()->info().interior == false);
       to_check.push_back(triangulation.infinite_face());
       while (!to_check.empty()) {
-          CGAL_assertion(to_check.front()->info().processed == true); // checked that front is always processed
+          CGAL_assertion(to_check.front()->info().processed == true);
           for (int neighbour = 0; neighbour < 3; ++neighbour) {
               if (to_check.front()->neighbor(neighbour)->info().processed) {
 
-              } else { // If its a neighbor still needs to be checked
+              } else {
                   to_check.front()->neighbor(neighbour)->info().processed = true;
                   CGAL_assertion(to_check.front()->neighbor(neighbour)->info().processed == true);
                   if (triangulation.is_constrained(Triangulation::Edge(to_check.front(), neighbour))) {
@@ -164,8 +183,12 @@ int main(int argc, const char * argv[]) {
       }
 
       // Step 5: export the interior faces back to 3d using the best fitting plane
+      // for storing point indices
+      int index = 0;
 
+      // iterate over faces of the triangulation
       for (auto it = triangulation.finite_faces_begin(); it != triangulation.finite_faces_end(); ++it) {
+
           if (it->info().interior) {
               std::vector<int> face_vertex_indices;
               for (int i = 0; i < 3; ++i) {
@@ -183,8 +206,8 @@ int main(int argc, const char * argv[]) {
                   face_vertex_indices.push_back(vertex_indices[pt3]);
               }
 
+              // store the vertex indices for the face
               output_faces.push_back(face_vertex_indices);
-
           }
       }
 
@@ -211,8 +234,6 @@ int main(int argc, const char * argv[]) {
       std::cerr << "Could not open output file." << std::endl;
       return -1;
   }
-
-
 
   return 0;
 }
