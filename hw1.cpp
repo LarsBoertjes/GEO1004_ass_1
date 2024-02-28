@@ -29,11 +29,8 @@ typedef CGAL::Constrained_Delaunay_triangulation_2<Kernel, TriangulationDataStru
 typedef Kernel::Point_2 Point2;
 typedef Kernel::Point_3 Point3;
 
-
-//const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000000138-0.obj";
-const std::string input_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_obj_files/NL.IMBAG.Pand.0503100000025027-0.obj";
-//const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/simple.obj";
-const std::string output_file = "/mnt/c/Users/LarsB/OneDrive/Documenten/GitHub/GEO1004_ass_1/hw1_output_files/complex.obj";
+const std::string input_file = "input.obj";             // file input
+const std::string output_file = "output.obj";           // file output
 
 // struct are like public classes
 struct Vertex {
@@ -50,7 +47,7 @@ struct Face {
 // to check for duplicate Point3 values within epsilon tolerance later
 struct epsilonCompare {
     bool operator() (const Point3& a, const Point3& b) const {
-        const double EPSILON = 0.0001;
+        const double EPSILON = 0.00001;
 
         if (std::abs(a.x() - b.x()) < EPSILON) {
             if (std::abs(a.y() - b.y()) < EPSILON) {
@@ -125,6 +122,8 @@ int main(int argc, const char * argv[]) {
       face.best_plane = plane; // store the best fitting plane to the face
   }
 
+  int index = 0;
+
   // Step 3: Triangulate faces
   for (auto &face : faces) {
 
@@ -137,6 +136,7 @@ int main(int argc, const char * argv[]) {
           Point2 pt = face.best_plane.to_2d(point3d);
           facePoints2D.push_back(pt);
       }
+
 
       // initialize a triangulation object for the facePoints2D.
       Triangulation triangulation;
@@ -184,7 +184,6 @@ int main(int argc, const char * argv[]) {
 
       // Step 5: export the interior faces back to 3d using the best fitting plane
       // for storing point indices
-      int index = 0;
 
       // iterate over faces of the triangulation
       for (auto it = triangulation.finite_faces_begin(); it != triangulation.finite_faces_end(); ++it) {
